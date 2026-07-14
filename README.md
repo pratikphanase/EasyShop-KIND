@@ -66,4 +66,8 @@ Promtail
 
 ## Folder Structure
 
+![CI](https://github.com/pratikphanase/EasyShop-KIND/actions/workflows/ci.yml/badge.svg)
+
+![CD](https://github.com/pratikphanase/EasyShop-KIND/actions/workflows/cd.yml/badge.svg)
+
 See folders inside this repository.
