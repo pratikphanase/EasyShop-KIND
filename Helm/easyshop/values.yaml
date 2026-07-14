@@ -1,0 +1,44 @@
+replicaCount: 2
+
+image:
+  repository: yourdockerhub/easyshop
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+ingress:
+  enabled: true
+  className: nginx
+  host: easyshop.local
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+config:
+  NODE_ENV: production
+  MONGODB_URI: mongodb://mongodb-service:27017/easyshop
+  NEXTAUTH_URL: http://easyshop.local
+  NEXT_PUBLIC_API_URL: http://easyshop.local/api
+
+secret:
+  NEXTAUTH_SECRET: change-me
+  JWT_SECRET: change-me
+
+mongodb:
+  image: mongo:7
+  storage: 5Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
