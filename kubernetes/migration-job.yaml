@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+
+kind: Job
+
+metadata:
+
+  name: easyshop-migration
+
+  namespace: easyshop
+
+spec:
+
+  template:
+
+    spec:
+
+      restartPolicy: Never
+
+      containers:
+
+      - name: migration
+
+        image: yourdockerhub/easyshop-migration:latest
+
+        env:
+
+        - name: MONGODB_URI
+
+          value: mongodb://mongodb-service:27017/easyshop
