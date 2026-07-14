@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ include "easyshop.fullname" . }}
+
+  labels:
+{{ include "easyshop.labels" . | indent 4 }}
+
+spec:
+
+  replicas: {{ .Values.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: easyshop
+
+  template:
+
+    metadata:
+      labels:
+        app: easyshop
+
+    spec:
+
+      containers:
+
+      - name: easyshop
+
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+        ports:
+        - containerPort: 3000
+
+        env:
+
+        - name: NODE_ENV
+          value: "{{ .Values.config.NODE_ENV }}"
+
+        - name: MONGODB_URI
+          value: "{{ .Values.config.MONGODB_URI }}"
+
+        - name: NEXTAUTH_URL
+          value: "{{ .Values.config.NEXTAUTH_URL }}"
+
+        - name: NEXT_PUBLIC_API_URL
+          value: "{{ .Values.config.NEXT_PUBLIC_API_URL }}"
+
+        - name: NEXTAUTH_SECRET
+          value: "{{ .Values.secret.NEXTAUTH_SECRET }}"
+
+        - name: JWT_SECRET
+          value: "{{ .Values.secret.JWT_SECRET }}"
+
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+
+        startupProbe:
+          httpGet:
+            path: /
+            port: 3000
+          failureThreshold: 30
+          periodSeconds: 10
