@@ -1,0 +1,84 @@
+name: EasyShop CD
+
+on:
+
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+
+env:
+
+  IMAGE_NAME: easyshop
+
+jobs:
+
+  docker:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Login DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker Image
+        run: |
+
+          docker build \
+            -t ${{ secrets.DOCKER_USERNAME }}/easyshop:${{ github.sha }} \
+            -t ${{ secrets.DOCKER_USERNAME }}/easyshop:latest .
+
+      - name: Push Docker Image
+        run: |
+
+          docker push ${{ secrets.DOCKER_USERNAME }}/easyshop:${{ github.sha }}
+
+          docker push ${{ secrets.DOCKER_USERNAME }}/easyshop:latest
+
+  deploy:
+
+    needs: docker
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Setup Kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+
+      - name: Configure Kubeconfig
+        run: |
+
+          mkdir -p ~/.kube
+
+          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+
+      - name: Helm Upgrade
+        run: |
+
+          helm upgrade \
+            --install easyshop \
+            ./helm/easyshop \
+            --set image.repository=${{ secrets.DOCKER_USERNAME }}/easyshop \
+            --set image.tag=${{ github.sha }}
+
+      - name: Verify Deployment
+        run: |
+
+          kubectl rollout status deployment/easyshop -n easyshop
+
+          kubectl get pods -n easyshop
+
+          kubectl get svc -n easyshop
