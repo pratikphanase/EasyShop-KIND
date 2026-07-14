@@ -64,10 +64,10 @@ Promtail
 
 ---
 
-## Folder Structure
+Workflow Status Badges
+
+Add these to your README later:
 
 ![CI](https://github.com/pratikphanase/EasyShop-KIND/actions/workflows/ci.yml/badge.svg)
 
 ![CD](https://github.com/pratikphanase/EasyShop-KIND/actions/workflows/cd.yml/badge.svg)
-
-See folders inside this repository.
