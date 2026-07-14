@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: easyshop-config
+  namespace: easyshop
+
+data:
+
+  NODE_ENV: "production"
+
+  MONGODB_URI: mongodb://mongodb-service:27017/easyshop
+
+  NEXTAUTH_URL: http://easyshop.local
+
+  NEXT_PUBLIC_API_URL: http://easyshop.local/api
