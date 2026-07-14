@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: easyshop-config
+
+data:
+
+  NODE_ENV: {{ .Values.config.NODE_ENV | quote }}
+
+  MONGODB_URI: {{ .Values.config.MONGODB_URI | quote }}
+
+  NEXTAUTH_URL: {{ .Values.config.NEXTAUTH_URL | quote }}
+
+  NEXT_PUBLIC_API_URL: {{ .Values.config.NEXT_PUBLIC_API_URL | quote }}
